@@ -9,9 +9,10 @@ public class MapaDeBits {
     private static MapaDeBits instace;
     
     private  MapaDeBits(byte[] disco){
-        this.blocos = disco;
         blocosLivres = new ArrayList<Integer>();
-        this.mapear();
+        blocos = new byte[disco.length];
+        this.remapearBloco(blocos);
+        this.mapear(disco);
     }
 
     public static MapaDeBits getInstace(byte[] disco) {
@@ -21,9 +22,10 @@ public class MapaDeBits {
         return instace;
     }
 
-    public void mapear() {
+    public void mapear(byte[] blocos) {
         for(int i = 0; i < blocos.length; i++) {
-            if(blocos[i] == 0) {
+            System.out.println("bloco: "+blocos[i]);
+            if(blocos[i] == -1) {
                 blocosLivres.add(i);
             }
         }
@@ -33,23 +35,32 @@ public class MapaDeBits {
         return blocosLivres;
     }
 
-    public boolean isFreeSpace(Arquivo arquivo) {
+    public int getFreeSpace(Arquivo arquivo) {
         if(!blocosLivres.isEmpty()) {
-            for(int b : blocosLivres) {
+            int tam = blocosLivres.size();
+            for(int i = 0; i < tam; i++) {
+                int b = blocosLivres.get(i) ;
                 int cont = b;
                 while(cont < b + arquivo.getTamanho()) {
-                    if(blocos[cont] == 0) {
+                    if(blocos[cont] == -1) {
                         cont++;
                     } else {
                         break;
                     }
                 }
                 if(cont >= b + arquivo.getTamanho()) {
-                    return true;
+                    return b;
                 }
             }
-            return false;
+            return -1;
         }
-        return false;
+        return -1;
+    }
+
+    private void remapearBloco(byte[] blocos) {
+        for (int i = 0; i < blocos.length; i++) {
+            blocos[i] = -1;
+            System.out.println("Remapear: " + blocos[i]);
+        }
     }
 }

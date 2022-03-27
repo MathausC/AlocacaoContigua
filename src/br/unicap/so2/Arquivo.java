@@ -8,6 +8,10 @@ public class Arquivo {
         this.nome = nome;
         this.conteudo = conteudo;
     }
+    public Arquivo(String nome){
+        this.nome = nome;
+        conteudo = new byte[100];
+    }
 
     public String getNome() {
         return this.nome;
@@ -16,4 +20,18 @@ public class Arquivo {
     public int getTamanho() {
         return this.conteudo.length;
     }
+
+    public byte[] getConteudo() {
+        return this.conteudo;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if(o.getClass() == this.getClass()) {
+            Arquivo other  = (Arquivo) o;
+            return other.getNome().equals(this.getNome());
+        } else {
+            return false;
+        }
+    } 
 }
