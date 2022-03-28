@@ -8,7 +8,7 @@ public class Main {
         byte[] buffer = new byte[100];
         remapeaArrays(disco);
         remapeaArrays(buffer);
-        MapaDeBits mapaDeBits = MapaDeBits.getInstace(disco);
+        MapaDeBits mapaDeBits;
         Diretorio diretorio = new Diretorio();
         Scanner i = new Scanner(System.in);
         int escolha;
@@ -19,6 +19,7 @@ public class Main {
         do{
             menu();
             escolha = i.nextInt(); i.nextLine();
+            mapaDeBits = new MapaDeBits(disco);
             switch(escolha){
                 case 1: 
                     System.out.println("Digite o nome do arquivo:");
@@ -54,7 +55,7 @@ public class Main {
         if(index != -1) {
             int node = diretorio.getInicio(index);
             int tamanho = diretorio.tamanhoArquivo(arquivo);
-            for(int i = node; i < tamanho; i++ ) {
+            for(int i = node; i - node< tamanho; i++ ) {
                 buffer[i-node] = disco[i];
             }
             imprimeBuffer(buffer);
@@ -78,15 +79,18 @@ public class Main {
 
     private static void limpaBuffer(byte[] buffer) {
         for(int i = 0; i < buffer.length; i++) {
-            buffer[i] = 0;
+            buffer[i] = -1;
         }
     }
  
     public static void escrever(Arquivo arquivo, MapaDeBits mapaDeBits, byte[] disco, Diretorio diretorio, byte[] buffer){
-        int node = mapaDeBits.getFreeSpace(arquivo);
+        int node = mapaDeBits.getEspacoLivre(arquivo);
         if(node != -1) {
+            System.out.println("Node a ser salvo: " + node);
+            System.out.println("Nome do arquivo a ser salvo: " + arquivo.getNome());
+            System.out.println("Conteúdo do arquivo a ser salvo: " + arquivo.getConteudo());
             carregaNoBuffer(buffer, arquivo);
-            for(int i = node; i < arquivo.getTamanho(); i++) {
+            for(int i = node; i - node < arquivo.getTamanho(); i++) {
                 disco[i] = buffer[i-node];
             }
             imprimeDisco(disco);
@@ -111,7 +115,8 @@ public class Main {
     private static void imprimeBuffer(byte[] buffer) {
         String mensagem = "Buffer: ";
         for (int i = 0; i < buffer.length; i++) {
-            mensagem += buffer[i];
+            if(buffer[i] != -1)
+                mensagem += buffer[i];
         }
         System.out.println(mensagem);
     }
@@ -119,7 +124,8 @@ public class Main {
     private static void imprimeDisco(byte[] disco) {
         String mensagem = "Disco: ";
         for (int i = 0; i < disco.length; i++) {
-            mensagem += disco[i];
+            if(disco[i] != -1)
+                mensagem += disco[i];
         }
         System.out.println(mensagem);
     }
